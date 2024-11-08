@@ -63,7 +63,6 @@ public class Swipe : MonoBehaviour
 
         if (swipeDelta.magnitude > deadZone)
         {
-            //Debug.Log("Swipe detected");
             if (Mathf.Abs(swipeDelta.x) > Mathf.Abs(swipeDelta.y))
             {
                 SwipeEvent?.Invoke(swipeDelta.x > 0 ? Vector2.right : Vector2.left);

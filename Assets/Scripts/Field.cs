@@ -27,16 +27,12 @@ public class Field : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("Start called");
         Swipe.SwipeEvent += OnInput;
-
-        // Прямой вызов для теста
-        OnInput(Vector2.left); // 
+        OnInput(Vector2.left); 
     }
 
     private void Update()
     {
-#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.A))
         {
             OnInput(Vector2.left);
@@ -53,12 +49,10 @@ public class Field : MonoBehaviour
         {
             OnInput(Vector2.down);
         }
-#endif
     }
 
     private void OnInput(Vector2 direction)
     {
-        Debug.Log($"OnInput called with direction={direction}");
 
         if (!GameController.GameStarted)
             return;
@@ -75,7 +69,7 @@ public class Field : MonoBehaviour
 
     private void Move(Vector2 direction)
     {
-        //Debug.Log($"Move called with direction={direction}");
+        if (Time.timeScale == 0) return; // 
 
         int startXY = direction.x > 0 || direction.y < 0 ? FieldSize - 1 : 0;
         int dir = direction.x != 0 ? (int)direction.x : -(int)direction.y;
@@ -89,7 +83,6 @@ public class Field : MonoBehaviour
                 var cellToMerge = FindCellToMerge(cell, direction);
                 if (cellToMerge != null)
                 {
-                    //Debug.Log($"Merging cells at ({cell.X}, {cell.Y}) and ({cellToMerge.X}, {cellToMerge.Y})");
                     cell.MergeWithCell(cellToMerge);
                     anyCellMoved = true;
                     continue;
@@ -97,7 +90,6 @@ public class Field : MonoBehaviour
                 var emptyCell = FindEmptyCell(cell, direction);
                 if (emptyCell != null)
                 {
-                    //Debug.Log($"Moving cell at ({cell.X}, {cell.Y}) to ({emptyCell.X}, {emptyCell.Y})");
                     cell.MoveToCell(emptyCell);
                     anyCellMoved = true;
                 }
@@ -110,7 +102,7 @@ public class Field : MonoBehaviour
         int startX = cell.X + (int)direction.x;
         int startY = cell.Y - (int)direction.y;
 
-        for (int x = startX, y = startY; //если плитка пустая
+        for (int x = startX, y = startY; 
              x >= 0 && x < FieldSize && y >= 0 && y < FieldSize;
              x += (int)direction.x, y -= (int)direction.y)
         {
@@ -119,7 +111,7 @@ public class Field : MonoBehaviour
               continue;  
             }
 
-            if (field[x, y].Value == cell.Value && !field[x,y].HasMerged) //сли не пустая и не объединялась в ходу
+            if (field[x, y].Value == cell.Value && !field[x,y].HasMerged) 
             {
                 return field[x, y];
             }
@@ -127,7 +119,7 @@ public class Field : MonoBehaviour
             break;
         }
 
-        return null; //объединиться не с кем
+        return null; 
     }
 
     private Cell FindEmptyCell(Cell cell, Vector2 direction)
@@ -183,7 +175,6 @@ public class Field : MonoBehaviour
 
     private void CreateField()
     {
-        Debug.Log("CreateField called");
         field = new Cell[FieldSize, FieldSize];
         float fieldWidth = FieldSize * (CellSize + Spacing) + Spacing;
         rect.sizeDelta = new Vector2(fieldWidth, fieldWidth);
@@ -204,7 +195,6 @@ public class Field : MonoBehaviour
 
     public void GenerateField()
     {
-        //Debug.Log("GenerateField called");
         if (field == null)
             CreateField();
         for (int x = 0; x < FieldSize; x++)
@@ -214,6 +204,8 @@ public class Field : MonoBehaviour
         {
             GenerateRandomCell();
         }
+        //field[0, 0].SetValue(0,0,10);
+        //field[0,1].SetValue(0, 1, 10); // для теста победы
     }
     
 
@@ -236,7 +228,6 @@ public class Field : MonoBehaviour
         }
 
         int value = Random.Range(0, 10) == 0 ? 2 : 1;
-        Debug.Log($"Generated value for new cell: {value}"); // отладка
         var cell = emptyCells[Random.Range(0, emptyCells.Count)];
         cell.SetValue(cell.X, cell.Y, value, false);
         

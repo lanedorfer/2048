@@ -3,14 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;  
 
 public class GameController : MonoBehaviour
 {
     public static GameController Instance;
     public int Numbers { get; private set; }
     public static bool GameStarted { get; private set; }
-    [SerializeField] private TextMeshProUGUI gameResult;
     [SerializeField] private TextMeshProUGUI numbersText;
+    [SerializeField] private Image gameResultImage;  
+    [SerializeField] private Sprite winSprite;  
+    [SerializeField] private Sprite loseSprite;  
 
     private void Awake()
     {
@@ -25,7 +28,7 @@ public class GameController : MonoBehaviour
 
     public void StartGame()
     {
-        gameResult.text = "";
+        gameResultImage.enabled = false; 
         SetNumbers(0);
         GameStarted = true;
 
@@ -35,13 +38,15 @@ public class GameController : MonoBehaviour
     public void Win()
     {
         GameStarted = false;
-        gameResult.text = "You Win";
+        gameResultImage.sprite = winSprite; 
+        gameResultImage.enabled = true;  
     }
 
     public void Lose()
     {
         GameStarted = false;
-        gameResult.text = "You Lose";
+        gameResultImage.sprite = loseSprite; 
+        gameResultImage.enabled = true; 
     }
 
     public void AddNumbers(int numbers)

@@ -34,28 +34,25 @@ public class Cell : MonoBehaviour
 
     public void IncreaseValue()
     {
+        if (Time.timeScale == 0) return; 
+
         if (Value < MaxValue)
         {
             Value++;
             HasMerged = true;
-            //Debug.Log($"IncreaseValue called, new Value={Value}");
 
             GameController.Instance.AddNumbers(Numbers);
-            
         }
     }
 
     public void ResetFlags()
     {
         HasMerged = false;
-        //Debug.Log("ResetFlags called");
     }
 
     public void MergeWithCell(Cell otherCell)
     {
         CellAnimationController.Instance.SmoothTransition(this, otherCell, true);
-        
-        //Debug.Log($"MergeWithCell called, merging with cell at ({otherCell.X}, {otherCell.Y})");
         otherCell.IncreaseValue();
         SetValue(X, Y, 0);
     }
@@ -63,25 +60,17 @@ public class Cell : MonoBehaviour
     public void MoveToCell(Cell target)
     {
         CellAnimationController.Instance.SmoothTransition(this, target, false);
-        
-        //Debug.Log($"MoveToCell called, moving to cell at ({target.X}, {target.Y})");
         target.SetValue(target.X, target.Y, Value, false);
         SetValue(X, Y, 0);
     }
 
     public void UpdateCell()
     {
-        //Debug.Log($"UpdateCell called for cell at ({X}, {Y}) with value {Value}"); // Отладка
 
         if (numbers != null)
         {
             numbers.text = isEmpty ? string.Empty : Numbers.ToString();
             numbers.color = Value <= 2 ? ColorManager.Instance.NumbersDarkColor : ColorManager.Instance.NumbersLightColor;
-            //Debug.Log($"numbers.text = {numbers.text}, numbers.color = {numbers.color}");
-        }
-        else
-        {
-            //Debug.LogError("numbers is null");
         }
 
         if (image != null)
@@ -91,7 +80,6 @@ public class Cell : MonoBehaviour
                 Color cellColor = ColorManager.Instance.CellColors[Value];
                 cellColor.a = 1f; 
                 image.color = cellColor;
-                //Debug.Log($"image.color = {image.color}");
             }
         }
     }
